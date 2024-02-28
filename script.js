@@ -1,7 +1,7 @@
-function drawHill(context, centerX, centerY, radiusX, radiusY) { //Draw hill using ellipse
+function drawHill(context, color, centerX, centerY, radiusX, radiusY) { //Draw hill using ellipse
     context.beginPath();
     context.ellipse(centerX, centerY, radiusX, radiusY, 0, Math.PI, 0);
-    context.fillStyle = 'green';
+    context.fillStyle = color;
     context.closePath();
     context.fill();
     context.strokeStyle = 'black';
@@ -253,7 +253,7 @@ rocketLaunch.arc(900, -10, 180, 0, Math.PI, false);
 rocketLaunch.fillStyle = 'orange';
 rocketLaunch.fill();
 
-drawHill(rocketLaunch, 450, 500, 500, 120);
+drawHill(rocketLaunch, 'green', 450, 500, 500, 120);
 
 rocketLaunch.beginPath();
 rocketLaunch.moveTo(240, 440);
@@ -336,14 +336,14 @@ function drawMoon(context, x, y, width, height) {
 }
 
 var rocketFlying = {
-  x: 450,
+  x: 700,
   y: 240,
   width: 50,
   height: 50,
   dy: 2
 };
 
-var rocketSpeed = 1.1;
+var rocketSpeed = 1.3;
 
 updateRocketFlyingCanvas = function() {
   
@@ -365,15 +365,6 @@ updateRocketFlyingCanvas = function() {
     rocketFlyingContext.fill();
   }
 
-  var rocketRotation = -Math.PI / 2;
-  drawRocket(rocketFlyingContext, rocketFlying.x + 150, rocketFlying.y, rocketFlying.width, rocketFlying.height, rocketRotation);
-  drawPropeller(rocketFlyingContext, rocketFlying.x + 138, rocketFlying.y, 0.3, 0.3, rocketRotation);
-  drawFlames(rocketFlyingContext, rocketFlying.x + 177, rocketFlying.y - 25, rocketFlying.width, rocketFlying.height * 0.5, rocketRotation);
-  drawRocketFins(rocketFlyingContext, rocketFlying.x + 160, rocketFlying.y, rocketFlying.width * 0.3, rocketFlying.height, rocketRotation);
-
-  drawEarth(rocketFlyingContext, 700, 130, 210, 200);
-  drawMoon(rocketFlyingContext, 100, 300, 50, 50);
-
   //Calculate the distance to the target
   var dx = 100 - (rocketFlying.x + 150); //X position of the moon - X position of the rocket
   var dy = 300 - rocketFlying.y; //Y position of the moon - Y position of the rocket
@@ -382,13 +373,64 @@ updateRocketFlyingCanvas = function() {
   var directionX = dx / distance;
   var directionY = dy / distance;
 
+  //Calculate scale factor based on distance
+  var scaleFactor = Math.max(0.10, distance / 1000);
+
+  drawEarth(rocketFlyingContext, 700, 130, 210, 200);
+  drawMoon(rocketFlyingContext, 100, 300, 50, 50);
+
+  var rocketRotation = -Math.PI / 2;
+  drawRocket(rocketFlyingContext, rocketFlying.x + 150 * scaleFactor, rocketFlying.y, rocketFlying.width * scaleFactor, rocketFlying.height * scaleFactor, rocketRotation);
+  drawPropeller(rocketFlyingContext, rocketFlying.x + 138 * scaleFactor, rocketFlying.y, 0.3 * scaleFactor, 0.3 * scaleFactor, rocketRotation);
+  drawFlames(rocketFlyingContext, rocketFlying.x + 190 * scaleFactor, rocketFlying.y - 37 * scaleFactor, rocketFlying.width * scaleFactor, rocketFlying.height * scaleFactor, rocketRotation);
+  drawRocketFins(rocketFlyingContext, rocketFlying.x + 160 * scaleFactor, rocketFlying.y, rocketFlying.width * 0.3 * scaleFactor, rocketFlying.height * scaleFactor, rocketRotation);
+
+
   //Move the rocket towards the target
   rocketFlying.x += directionX * rocketSpeed;
   rocketFlying.y += directionY * rocketSpeed;
-
-  if (distance > rocketSpeed) {
+  
+  var closeEnough = 150;
+  if (distance > closeEnough) {
     window.requestAnimationFrame(updateRocketFlyingCanvas);
   }
 } 
 
 updateRocketFlyingCanvas();
+
+var rocketLanding = {
+    x: 450,
+    y: 0,
+    width: 200,
+    height: 100,
+    rotate: 0,
+    dy: 2
+  };
+
+updateRocketMoonLandingCanvas = function() {
+  
+    var rocketMoonLandingCanvas = document.querySelector('#rocket-moon-landing');
+    var rocketMoonLandingContext = rocketMoonLandingCanvas.getContext('2d');
+
+    rocketMoonLandingContext.clearRect(0, 0, rocketMoonLandingCanvas.width, rocketMoonLandingCanvas.height);
+
+    rocketMoonLandingCanvas.style.border = 'black';
+    rocketMoonLandingCanvas.style.backgroundColor = 'black';
+
+    drawHill(rocketMoonLandingContext, 'gray', 450, 500, 500, 120);
+
+    drawPropeller(rocketMoonLandingContext, rocketLanding.x, rocketLanding.y, 1, 1, 0);
+    drawRocket(rocketMoonLandingContext, rocketLanding.x, rocketLanding.y, rocketLanding.width, rocketLanding.height, 0);
+    drawRocketFins(rocketMoonLandingContext, rocketLanding.x, rocketLanding.y + rocketLanding.height / 2, 67, 200, 0);
+
+    rocketLanding.y += rocketLanding.dy;
+    drawFlames(rocketMoonLandingContext, rocketLanding.x - 50, rocketLanding.y + rocketLanding.height + 20 + rocketLanding.height / 2, rocketLanding.width, rocketLanding.height / 2, 0);
+
+
+    if (rocketLanding.y < 300 - rocketLanding.height / 2) {
+        requestAnimationFrame(updateRocketMoonLandingCanvas);
+    }
+
+}
+
+updateRocketMoonLandingCanvas();
