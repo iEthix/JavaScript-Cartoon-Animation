@@ -491,16 +491,16 @@ updateRocketMoonLandingCanvas = function() {
   }
 }
 // Creates the flag
-function drawFlag(ctx, originX, originY, flagWidth, flagHeight) {
-  ctx.save();
+function drawFlag(context, originX, originY, flagWidth, flagHeight) {
+  context.save();
   
-  ctx.translate(originX, originY);
+  context.translate(originX, originY);
 
-  ctx.scale(flagWidth / ctx.canvas.clientWidth, flagHeight / ctx.canvas.clientHeight);
+  context.scale(flagWidth / context.canvas.clientWidth, flagHeight / context.canvas.clientHeight);
 
-  stripes(ctx);
-  field(ctx);
-  ctx.restore();
+  stripes(context);
+  field(context);
+  context.restore();
 }
 
 // Function to draw the stripes
@@ -524,21 +524,21 @@ function field(context, cantonwidth, cantonheight) {
   stars(context, cantonwidth, cantonheight);
 }
 // Draws a grid of stars within a specified area on the canvas
-function stars(ctx, cantonwidth, cantonheight) {
+function stars(context, cantonwidth, cantonheight) {
   var starrowcount = 9;
-  var starradius = (ctx.canvas.clientHeight/13)*(4/5)/2;
+  var starradius = (context.canvas.clientHeight/13)*(4/5)/2;
   var ypos = cantonheight/10;
   for (var x = 0 ; x < starrowcount; x++) {       
       if (x % 2) {
           xpos = cantonwidth/7;
           for (var j = 0; j < 5; j++) {               
-              star(ctx,xpos,ypos,starradius,5,.35);
+              star(context,xpos,ypos,starradius,5,.35);
               xpos = xpos + cantonwidth/6;
           }          
       } else {            
           xpos = cantonwidth/15;
           for (var i = 0; i < 6; i++) {              
-               star(ctx,xpos,ypos,starradius,5,.35);
+               star(context,xpos,ypos,starradius,5,.35);
                xpos = xpos + cantonwidth/6;
           }
       }        
@@ -546,21 +546,21 @@ function stars(ctx, cantonwidth, cantonheight) {
   }
 }
 // Draws a single star on the canvas.
-function star(ctx, x, y, r, p, m){
-  ctx.fillStyle = "#FFFFFF";
-  ctx.save();
-  ctx.beginPath();
-  ctx.translate(x, y);
-  ctx.moveTo(0,0-r);
+function star(context, x, y, r, p, m){
+  context.fillStyle = "#FFFFFF";
+  context.save();
+  context.beginPath();
+  context.translate(x, y);
+  context.moveTo(0,0-r);
   for (var i = 0; i < p; i++)
   {
-      ctx.rotate(Math.PI / p);
-      ctx.lineTo(0, 0 - (r*m));
-      ctx.rotate(Math.PI / p);
-      ctx.lineTo(0, 0 - r);
+    context.rotate(Math.PI / p);
+    context.lineTo(0, 0 - (r*m));
+    context.rotate(Math.PI / p);
+    context.lineTo(0, 0 - r);
   }
-  ctx.fill();
-  ctx.restore();
+  context.fill();
+  context.restore();
 }
 // Draw the mission complete scene
 updateRocketMissionCompleteCanvas = function() {
