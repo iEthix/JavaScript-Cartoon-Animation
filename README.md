@@ -1,1 +1,1 @@
-# A RocketLaunch animation built using JavaScript.
+# A Rocket launch animation built using JavaScript.
